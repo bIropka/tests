@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My bind</title>
+</head>
+<body>
+
+</body>
+
+<script>
+
+    /** it is my result (required function) **/
+    function myBind(func, newThis) {
+        return func.call(newThis);
+    }
+
+    /** test for this function **/
+
+    var obj = {
+        a : 2,
+        b : 4,
+        c : 4
+    };
+
+    function sum(object) {
+        return this.a + this.b + this.c;
+    }
+
+    console.log('without bind:  ' + sum(obj));
+
+    var o2 = sum.bind(obj);
+    console.log('with classic bind:  ' + o2());
+
+    console.log('with call:  ' + sum.call(obj));
+
+    console.log('with my bind:  ' + myBind(sum, obj));
+
+</script>
+</html>
