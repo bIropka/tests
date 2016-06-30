@@ -10,14 +10,14 @@
 
 <script>
 
-    /** it is my result (required function) **/
+    // it is my result (required function)
     function myBind(func, newThis) {
         return function() {
             return func.call(newThis);
         }
     }
 
-    /** test for this function **/
+    // test for this function
 
     var obj = {
         a : 2,

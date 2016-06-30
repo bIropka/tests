@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My bind</title>
+</head>
+<body>
+
+</body>
+
+<script>
+
+    /** it is my result (required object) **/
+
+    var obj3 = {
+
+        "_" : {},
+
+        bind : function(func, newThis) {
+
+            var args = [].slice.call(arguments, 2);
+
+            return function() {
+
+                var moreArgs = [].slice.call(arguments);
+
+                for(var i = 0; i < args.length; i++) {
+                    if(moreArgs.length == 0) break;
+                    if((typeof(args[i]) == 'object' && Object.keys(args[i]).length == 0) || args[i] === undefined) {
+                        args[i] = moreArgs.shift();
+                    }
+                }
+
+                return func.apply(newThis, args.concat(moreArgs));
+            }
+
+        }
+
+    };
+
+    /** test for this result **/
+
+    function g(a, b, c) {
+        console.log(this);
+        console.log([].slice.call(arguments));
+    }
+
+    g(1, 2, 3);
+    var p1 = obj3.bind(g, 1, 2, 3, obj3._);
+    p1();
+    p1(4);
+    var p2 = obj3.bind(g, 1, obj3._, 2, 3);
+    p2();
+    p2(4);
+    var p3 = obj3.bind(g, 1, obj3._, obj3._);
+    p3();
+    p3(4,5,6);
+
+</script>
+</html>

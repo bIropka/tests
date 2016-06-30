@@ -11,13 +11,12 @@
 <script>
 
     /** it is my result (required function) **/
-    function myBind(func, newThis) {
+    function myBind2(func, newThis) {
 
         var startArgs = [].slice.call(arguments, 2);
 
         return function() {
-            var moreArgs = [].slice.call(arguments);
-            return func.apply(newThis, startArgs.concat(moreArgs));
+            return func.apply(newThis, startArgs);
         }
     }
 
@@ -30,15 +29,14 @@
         items.forEach(function(item){
             result += item;
         });
-        console.log(this);
         return result;
     }
 
     // with own context
-    console.log(infinitySum(3, 7, 100));
+    console.log(infinitySum(3, 7, 100, 19));
 
     // with myBind and new context
-    var newFunction = myBind(infinitySum, 'newContext', 3, 7, 100);
+    var newFunction = myBind2(infinitySum, 'newContext', 3, 7, 100, 19);
     console.log(newFunction());
 
 

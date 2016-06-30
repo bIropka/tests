@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My bind</title>
+</head>
+<body>
+
+<script>
+
+    /** TASK I **/
+
+    console.log('task I');
+    // it is my result (required function)
+    function myBind1(func, newThis) {
+        return function() {
+            return func.call(newThis);
+        }
+    }
+
+    // test for this function
+
+    var obj1 = {
+        a : 2,
+        b : 4,
+        c : 4
+    };
+
+    function sum1(object) {
+        return this.a + this.b + this.c;
+    }
+
+    console.log('without bind:  ' + sum1(obj1));
+
+    var o1 = sum1.bind(obj1);
+    console.log('with classic bind:  ' + o1());
+
+    console.log('with call:  ' + sum1.call(obj1));
+
+    var o2 = myBind1(sum1, obj1);
+    console.log('with my bind:  ' + o2());
+
+
+    /** TASK II **/
+
+    console.log('task II');
+
+    /** it is my result (required function) **/
+    function myBind2(func, newThis) {
+
+        var startArgs = [].slice.call(arguments, 2);
+
+        return function() {
+            return func.apply(newThis, startArgs);
+        }
+    }
+
+    /** test for this function **/
+
+    // function for test
+    function infinitySum() {
+        var items = [].slice.call(arguments);
+        var result = 0;
+        items.forEach(function(item){
+            result += item;
+        });
+        return result;
+    }
+
+    // with own context
+    console.log(infinitySum(3, 7, 100, 19));
+
+    // with myBind and new context
+    var newFunction = myBind2(infinitySum, 'newContext', 3, 7, 100, 19);
+    console.log(newFunction());
+
+    /** TASK III **/
+
+    console.log('task III');
+
+    /** it is my result (required object) **/
+
+    var obj3 = {
+
+        "_" : {},
+
+        bind : function(func, newThis) {
+
+            var args = [].slice.call(arguments, 2);
+
+            return function() {
+
+                var moreArgs = [].slice.call(arguments);
+
+                for(var i = 0; i < args.length; i++) {
+                    if(moreArgs.length == 0) break;
+                    if((typeof(args[i]) == 'object' && Object.keys(args[i]).length == 0) || args[i] === undefined) {
+                        args[i] = moreArgs.shift();
+                    }
+                }
+
+                return func.apply(newThis, args.concat(moreArgs));
+            }
+
+        }
+
+    };
+
+    /** test for this result **/
+
+    function g(a, b, c) {
+        console.log(this, a, b, c);
+    }
+
+    g(1, 2, 3);
+    var p1 = obj3.bind(g, 1, 2, 3, obj3._);
+    p1();
+    p1(4);
+    var p2 = obj3.bind(g, 1, obj3._, 2, 3);
+    p2();
+    p2(4);
+    var p3 = obj3.bind(g, 1, obj3._, obj3._);
+    p3();
+    p3(4,5,6);
+
+</script>
+</body>
+</html>
