@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My bind</title>
+</head>
+<body>
+
+</body>
+
+<script>
+
+    /** it is my result (required function) **/
+    function myBind(func, newThis) {
+
+        var startArgs = [].slice.call(arguments, 2);
+
+        return function() {
+            var moreArgs = [].slice.call(arguments);
+            return func.apply(newThis, startArgs.concat(moreArgs));
+        }
+    }
+
+    /** test for this function **/
+
+    // function for test
+    function infinitySum() {
+        var items = [].slice.call(arguments);
+        var result = 0;
+        items.forEach(function(item){
+            result += item;
+        });
+        console.log(this);
+        return result;
+    }
+
+    // with own context
+    console.log(infinitySum(3, 7, 100));
+
+    // with myBind and new context
+    var newFunction = myBind(infinitySum, 'newContext', 3, 7, 100);
+    console.log(newFunction());
+
+
+</script>
+</html>

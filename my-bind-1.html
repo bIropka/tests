@@ -12,7 +12,9 @@
 
     /** it is my result (required function) **/
     function myBind(func, newThis) {
-        return func.call(newThis);
+        return function() {
+            return func.call(newThis);
+        }
     }
 
     /** test for this function **/
@@ -29,12 +31,13 @@
 
     console.log('without bind:  ' + sum(obj));
 
-    var o2 = sum.bind(obj);
-    console.log('with classic bind:  ' + o2());
+    var o1 = sum.bind(obj);
+    console.log('with classic bind:  ' + o1());
 
     console.log('with call:  ' + sum.call(obj));
 
-    console.log('with my bind:  ' + myBind(sum, obj));
+    var o2 = myBind(sum, obj);
+    console.log('with my bind:  ' + o2());
 
 </script>
 </html>
