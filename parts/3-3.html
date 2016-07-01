@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<script>
+
+    search(5, { a: 3, b: 5, c: 9 }); // true
+
+    search("5", { a: 3, b: 5, c: 9 }); // false
+
+    search(5, { a: 3, b: { u: 8, '5': 'c', s: 5}, c: 9 }); // true
+
+    search(5, { a: 3, b: { u: 8, '5': 'c', s: 7}, c: 9 }); // false
+
+    search(5, { a: [1, 2, 3, 5, 7, 9], c: 8, s: 6 }); // true
+
+    search(5, { a: [1, 2, { s: 4, c: {u: 5}} ], s: 9 }); // true
+
+
+    function search(number, obj) {
+
+        var buffer = [];
+        buffer.push(obj);
+
+        while (buffer.length > 0) {
+
+            obj = buffer.pop();
+
+            for (var key in obj) {
+                if (typeof obj[key] === 'object') {
+                    buffer.push(obj[key]);
+                } else {
+                    if (obj[key] === number) {
+                        console.log(true);
+                        return true;
+                    }
+                }
+            }
+
+        }
+
+        console.log(false);
+        return false;
+
+    }
+
+</script>
+</body>
+</html>

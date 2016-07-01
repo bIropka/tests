@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<script>
+
+    for (var i = 1; i <= 7; i++) {
+        console.log(palindrom(i));
+    }
+
+    // required function
+    function palindrom(size) {
+
+        var primes = getEratosthenSieve(Math.pow(10, size));
+
+        for (var i = primes.length - 1; i > Math.pow(10, size - 1); i--) {
+
+            if (primes[i] && isPalindrom(i)) {
+                return i;
+            }
+
+        }
+
+        return 1;
+
+    }
+
+    // palindroms checking
+    function isPalindrom(number) {
+
+        var strPrime = '' + number;
+
+        for (var j = 0; j <= strPrime.length / 2; j++) {
+
+            if (strPrime.charAt(j) !== strPrime.charAt(strPrime.length - 1 - j)) {
+                return false;
+            }
+
+        }
+
+        return true;
+
+    }
+
+    // creating sieve of Eratosthenes for primes checking
+    function getEratosthenSieve(number) {
+
+        var result = new Array(number);
+
+        result.fill(true);
+        result[0] = false;
+        result[1] = false;
+
+        for (var i = 2; i < result.length; i++) {
+
+            if (result[i]) {
+
+                for (var j = i * i; j < result.length; j += i) {
+                    result[j] = false;
+                }
+
+            }
+
+        }
+
+        return result;
+    }
+
+</script>
+</body>
+</html>
