@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task 4</title>
+</head>
+<body>
+
+<script>
+
+    /****************
+     *** TASK 4-1 ***
+     ****************
+
+    //searchIterative("5", { a: 3, b: 5, c: 9 }); // -1
+    //searchIterative(5, { a: [1, 2, 3, 5, 7, 9], c: 8, s: 6 }); // obj.a[3]
+    searchIterative(5, { a: {x: 1, r: 4, t: 6, q: 8}, t: [1, 4, 6, 8], e: [1, 2, { s: 4, c: {u: 5}}], s: 9 }); // obj.a[2].c.u
+
+    // required function
+    function searchIterative(number, obj) {
+
+        var queue = [];
+        var allValues  = {};
+        queue.push(obj);
+        allValues['obj'] = obj;
+
+        while (queue.length > 0) {
+
+            obj = queue.shift();
+
+            for (var key in obj) {
+                if (typeof obj[key] === 'object') {
+                    queue.push(obj[key]);
+                    allValues[key] = obj[key];
+                } else {
+                    if (obj[key] === number) {
+                        findPath(allValues, key);
+                        return true;
+                    }
+                }
+            }
+
+        }
+
+        console.log(-1);
+        return -1;
+
+    }
+
+    function findPath(pool, value) {
+
+        var path = [];
+        path.unshift(value);
+
+        while (value !== 'obj') {
+
+            for (var key in pool) {
+
+                if (value in pool[key]) {
+                    console.log(value);
+                    value = key;
+                    if (Object.prototype.toString.call(pool[key]) == '[object Array]') {
+                        path[0] = '[' + path[0] + ']';
+                    } else {
+                        path.unshift(value);
+                    }
+                }
+
+            }
+
+        }
+
+        console.log(path.join('.'));
+
+    }
+
+
+    /****************
+     *** TASK 4-2 ***
+     ****************/
+
+    search("5", { a: 3, b: 5, c: 9 }); // -1
+    search(5, { a: [1, 2, 3, 5, 7, 9], c: 8, s: 6 }); // obj.a[3]
+    search(5, { a: [1, 2, { s: 4, c: {u: 5}}], s: 9 }); // obj.a[2].c.u
+
+    function search(number, obj) {
+
+        var path = 'obj';
+
+        if(searchRecursion(number, obj)) {
+            console.log(path);
+        } else {
+            console.log(-1);
+        }
+
+        function searchRecursion(number, obj) {
+
+            for (var key in obj) {
+
+                if (typeof obj[key] === 'object') {
+
+                    if (Object.prototype.toString.call(obj[key]) == '[object Array]') {
+                        path += '.' + key + '[';
+                    } else if (path.charAt(path.length - 1) === '[') {
+                        path += key + ']';
+                    } else {
+                        path += '.' + key;
+                    }
+
+                    return searchRecursion(number, obj[key]);
+
+                } else if (obj[key] === number) {
+
+                    if (path.charAt(path.length - 1) === '[') {
+                        path += key + ']';
+                    } else {
+                        path += '.' + key;
+                    }
+
+                    return true;
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+
+
+
+</script>
+</body>
+</html>
