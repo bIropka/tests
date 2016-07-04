@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Task1.2</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: black;
+            width: 200px;
+            padding: 25px;
+            border-radius: 10px;
+        }
+        .light {
+            border: solid gray 10px;
+            background-color: white;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 10px;
+            background-color: lightgray;
+            text-align: center;
+            line-height: 130px;
+            font-size: 80px;
+            font-weight: bold;
+        }
+        .red.active {
+            border-color: darkred;
+            background-color: red;
+        }
+        .yellow.active {
+            border-color: orange;
+            color: yellow;
+            background-color: yellow
+        }
+        .green.active {
+            border-color: darkgreen;
+            color: green;
+            background-color: green
+        }
+        .redText {
+            color: red;
+        }
+        .greenText {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="red light active"></div>
+    <div class="yellow light redText">22</div>
+    <div class="green light"></div>
+</div>
+
+<script>
+
+    var lampRed = document.getElementsByClassName('red')[0];
+    var lampYellow = document.getElementsByClassName('yellow')[0];
+    var lampGreen = document.getElementsByClassName('green')[0];
+
+    var currentCount;
+    var timer;
+
+    startCountDown('red');
+
+    function startCountDown(color) {
+
+        currentCount = 22;
+
+        switch (color) {
+
+            case 'red':
+                lampRed.classList.add('active');
+                lampYellow.classList.remove('active');
+                lampYellow.classList.add('redText');
+                lampYellow.classList.remove('greenText');
+                lampGreen.classList.remove('active');
+                timer = setInterval(redCounter, 1000);
+                break;
+
+            case 'green':
+                lampRed.classList.remove('active');
+                lampYellow.classList.remove('active');
+                lampYellow.classList.remove('redText');
+                lampYellow.classList.add('greenText');
+                lampGreen.classList.add('active');
+                timer = setInterval(greenCounter, 1000);
+                break;
+
+        }
+
+    }
+
+    function redCounter() {
+
+        if (currentCount >= 3) {
+            lampYellow.innerHTML = currentCount--;
+        }else {
+            currentCount--;
+            lampYellow.innerHTML = '';
+        }
+
+        if (currentCount == 2) {
+            lampYellow.classList.add('active');
+        }
+
+        if (currentCount == -1) {
+            clearInterval(timer);
+            startCountDown('green');
+        }
+
+    }
+
+    function greenCounter() {
+
+        if (currentCount > 0) {
+            lampYellow.innerHTML = currentCount--;
+        } else {
+            currentCount--;
+            lampYellow.innerHTML = '';
+        }
+
+        if (currentCount == -1) {
+            lampYellow.classList.add('active');
+            lampGreen.classList.remove('active');
+        }
+
+        if (currentCount == -4) {
+            clearInterval(timer);
+            startCountDown('red');
+        }
+
+    }
+
+</script>
+</body>
+</html>

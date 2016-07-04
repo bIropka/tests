@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task weekend</title>
+</head>
+<body>
+
+
+<script>
+
+    console.log('task-1:');
+    console.log(rpn([1, 2, '+'])); // 3
+    console.log(rpn([1, 2, '+', 5, '*'])); // 15
+    console.log(rpn([1, 2, '+', 5])); // false
+    console.log(rpn([1, 2, '+', '*'])); // false
+    console.log(rpn([1, 2, 3, '*', '+'])); // 7
+
+    // first required function
+    function rpn(array) {
+
+        var input = array;
+
+        // store for operands
+        var stack = [];
+
+        // temporary store for symbols from input
+        var temp;
+
+        var firstOperand, secondOperand;
+
+        while(input.length > 0) {
+
+            temp = input.shift();
+
+            if (isNumeric(temp)) {
+                stack.push(temp);
+                continue;
+            }
+
+            if(stack.length < 2) return false;
+            secondOperand = stack.pop();
+            firstOperand = stack.pop();
+
+            switch (temp) {
+
+                case '+':
+                    stack.push(firstOperand + secondOperand);
+                    break;
+
+                case '-':
+                    stack.push(firstOperand - secondOperand);
+                    break;
+
+                case '*':
+                    stack.push(firstOperand * secondOperand);
+                    break;
+
+                case '/':
+                    stack.push(firstOperand / secondOperand);
+                    break;
+
+                default:
+                    return false;
+            }
+
+        }
+
+        if (stack.length === 1) {
+            return stack[0];
+        } else {
+            return false;
+        }
+
+    }
+
+    function isNumeric(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
+
+
+    console.log('task-2:');
+    /*console.log(convert('1 + 2')); // [1, 2, '+']
+    console.log(convert('2 * 3 + 1')); // [1, 2, 3, '*', '+']
+    console.log(convert('1 + (2 - 8)')); // [1, 2, 8, , '-', '+']*/
+
+    convert('1 + (2 - 8)');
+
+    // second required function
+    function convert(str) {
+
+        var input = str.split(' ');
+
+        for (var i = 0; i < input.length; i++) {
+
+            if (~input[i].indexOf('(')) {
+                input.splice(i, 0, '(');
+                input[i] = input[i].slice(1);
+                i++;
+            }
+
+            if (~input[i].indexOf(')')) {
+                input.splice(i + 1, 0, ')');
+                input[i] = input[i].slice(0, -1);
+                i++;
+            }
+
+        }
+
+        
+
+    }
+
+</script>
+</body>
+</html>
