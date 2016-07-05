@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>task 5</title>
+</head>
+<body>
+
+<script>
+
+    /****************
+     *** TASK 5-2 ***
+     ****************/
+
+    var paths2 = [
+        {
+            from: 1,
+            to: 2,
+            price: 7
+        },
+        {
+            from: 1,
+            to: 3,
+            price: 9
+        },
+        {
+            from: 6,
+            to: 1,
+            price: 14
+        },
+        {
+            from: 2,
+            to: 3,
+            price: 10
+        },
+        {
+            from: 4,
+            to: 2,
+            price: 15
+        },
+        {
+            from: 4,
+            to: 3,
+            price: 11
+        },
+        {
+            from: 5,
+            to: 4,
+            price: 6
+        },
+        {
+            from: 5,
+            to: 6,
+            price: 9
+        },
+        {
+            from: 6,
+            to: 3,
+            price: 2
+        }
+    ];
+
+    //floyd2(paths2);
+
+    function floyd2(array) {
+
+        var adjacencyMatrix = getAdjacencyMatrix(array);
+
+        adjacencyMatrix = transformMatrix(adjacencyMatrix);
+
+        showMatrix(adjacencyMatrix);
+
+    }
+
+    function transformMatrix(array) {
+
+        for ( var k = 0; k < array.length; ++k ) {
+
+            for ( var i = 0; i < array.length; ++i ) {
+
+                for ( var  j = 0; j < array.length; ++j ) {
+
+                    array[i][j] = Math.min(array[i][j], array[i][k] + array[k][j]);
+
+                }
+
+            }
+
+        }
+
+        return array;
+
+    }
+
+    function getAdjacencyMatrix(array) {
+
+        var nodesNumber = getNodesNumber(array);
+
+        var result = new Array(nodesNumber);
+
+        for (var i = 0; i < nodesNumber; i++) {
+            result[i] = new Array(nodesNumber);
+            result[i].fill(Infinity);
+            result[i][i] = 0;
+        }
+
+        for (var j = 0; j < array.length; j++) {
+
+            result[array[j].from - 1][array[j].to - 1] = array[j].price;
+            result[array[j].to - 1][array[j].from - 1] = array[j].price;
+        }
+
+        return result;
+
+    }
+
+    function getNodesNumber(array) {
+
+        var nodes = {};
+        array.forEach(function(elem, index) {
+            if (!nodes[elem.from]) {
+                nodes[elem.from] = true;
+            }
+            if (!nodes[elem.to]) {
+                nodes[elem.to] = true;
+            }
+        });
+
+        return Object.keys(nodes).length;
+
+    }
+
+    function showMatrix(matrix) {
+
+        var maxDigitsNumber = getMaxDigitsNumber(matrix);
+
+        var mask = new Array(maxDigitsNumber).fill(' ').join('');
+
+        var result = '';
+
+        for (var i = 0; i < matrix.length; i++) {
+
+            result += '\n';
+
+            for (var j = 0; j < matrix[i].length; j++) {
+
+                if (matrix[i][j].length < maxDigitsNumber) {
+                    result += mask.slice(matrix[i][j].length) + matrix[i][j] + '  ';
+                } else {
+                    result += matrix[i][j] + '  ';
+                }
+
+            }
+
+        }
+
+        console.log(result);
+
+    }
+
+    function getMaxDigitsNumber(matrix) {
+
+
+        var max = 0;
+
+        for (var i = 0; i < matrix.length; i++) {
+
+            for (var j = 0; j < matrix[i].length; j++) {
+
+                matrix[i][j] = '' + matrix[i][j];
+
+                if (matrix[i][j].length > max) {
+                    max = matrix[i][j].length;
+                }
+
+            }
+
+        }
+
+        return max;
+
+    }
+
+
+    /****************
+     *** TASK 5-3 ***
+     ****************/
+
+    var paths3 = [
+        {
+            from: 1,
+            to: 2,
+            price: 7
+        },
+        {
+            from: 1,
+            to: 3,
+            price: 9
+        },
+        {
+            from: 6,
+            to: 1,
+            price: 14
+        },
+        {
+            from: 2,
+            to: 3,
+            price: 10
+        },
+        {
+            from: 4,
+            to: 2,
+            price: 15
+        },
+        {
+            from: 4,
+            to: 3,
+            price: 11
+        },
+        {
+            from: 5,
+            to: 4,
+            price: 6
+        },
+        {
+            from: 5,
+            to: 6,
+            price: 9
+        },
+        {
+            from: 6,
+            to: 3,
+            price: 2
+        }
+    ];
+
+    floyd3(paths3);
+
+    function floyd3(array) {
+
+        var nodes = getNodes(array);
+
+        showWays(1, nodes);
+
+        /*for (var node in nodes) {
+
+            showWays(node, nodes);
+
+        */
+
+    }
+
+    function showWays(start, nodes) {
+
+        var knownNodes = [];
+        nodes[start].way = '' + start;
+        knownNodes.push(nodes[start]);
+
+        var unknownNodes = [];
+        for (var key in nodes) {
+            if (key !== start) {
+                unknownNodes.push(nodes[key]);
+            }
+        }
+
+        var minWay = Infinity;
+        var nearKnown = 100;
+        var nearNeighbor = 100;
+
+        while (unknownNodes.length > 0) {
+
+
+            knownNodes.forEach(function(from, fromIndex) {
+
+                unknownNodes.forEach(function(to, toIndex) {
+
+                    if (from.neighbors[to.name]) {
+
+                        if (from.neighbors[to.name] < minWay) {
+
+                            minWay = from.neighbors[to.name];
+                            nearKnown = fromIndex;
+                            nearNeighbor = toIndex;
+
+                        }
+
+                    }
+
+                });
+
+            });
+
+            knownNodes.push(unknownNodes[nearNeighbor]);
+            unknownNodes[nearNeighbor].way =  knownNodes[nearKnown].way + ' ' + unknownNodes[nearNeighbor].name;
+            unknownNodes.splice(nearNeighbor, 1);
+            minWay = Infinity;
+            nearKnown = 100;
+            nearNeighbor = 100;
+
+        }
+
+        knownNodes.forEach(function(node) {
+            console.log(start + '  -->  ' + node.name + ':  ' + node.way);
+        });
+
+
+    }
+
+    function getNodes(array) {
+
+        var nodes = {};
+
+        array.forEach(function(node) {
+
+            if(!nodes[node.from]) {
+
+                nodes[node.from] = {
+                    name: node.from,
+                    neighbors: {}
+                };
+
+            }
+
+            if(!nodes[node.to]) {
+
+                nodes[node.to] = {
+                    name: node.to,
+                    neighbors: {}
+                };
+
+            }
+
+            nodes[node.from].neighbors[node.to] = node.price;
+            nodes[node.to].neighbors[node.from] = node.price;
+
+        });
+
+        return nodes;
+
+    }
+
+</script>
+</body>
+</html>
