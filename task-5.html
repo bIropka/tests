@@ -60,7 +60,7 @@
         }
     ];
 
-    //floyd2(paths2);
+    floyd2(paths2);
 
     function floyd2(array) {
 
@@ -238,80 +238,103 @@
 
     function floyd3(array) {
 
+        // get object with all nodes
         var nodes = getNodes(array);
 
-        showWays(1, nodes);
+        var result = [];
 
-        /*for (var node in nodes) {
+        for (var name in nodes) {
 
-            showWays(node, nodes);
+            result.push(getWays(name, nodes));
 
         }
 
-        */
+        for(var i = 0; i < result.length; i++) {
+
+            for(var j = i; j < result[i].length; j++) {
+
+                console.log(result[i][j]);
+
+            }
+
+        }
 
     }
 
-    function showWays(start, nodes) {
+    // use modified Dijkstra's algorithm
+    // startName - the name of start node
+    // nodes - collection for all nodes
+    function getWays(startName, nodes) {
 
-        var knownNodes = [];
-        var unknownNodes = [];
+        var known = {};
+        var unknown = {};
 
-        nodes.forEach(function(node) {
+        nodes[startName].way = '' + startName;
+        nodes[startName].weight = 0;
+        known[startName] = nodes[startName];
 
-            if (node.name === start) {
-                node.way = '' + start;
-                knownNodes.push(node);
-            } else {
-                unknownNodes.push(node);
-            }
+        for (var nodeName in nodes[startName].neighbors) {
 
-        });
+            unknown[nodeName] = nodes[nodeName];
+
+        }
 
         var minWay = Infinity;
-        var nearKnown = Infinity;
-        var nearNeighbor = Infinity;
+        var nearKnown, nearUnknown;
 
-        while (unknownNodes.length > 0) {
+        while (Object.keys(unknown).length > 0) {
 
-            knownNodes.forEach(function(known, knownIndex) {
+            for (var knownName in known) {
 
-                unknownNodes.forEach(function(unknown, unknownIndex) {
+                for (var unknownName in unknown) {
 
-                    if (known.neighbors[unknown.name]) {
+                    if (known[knownName].neighbors[unknownName]) {
 
-                        if (known.neighbors[unknown.name] < minWay) {
+                        if (known[knownName].weight + known[knownName].neighbors[unknownName] < minWay) {
 
-                            minWay = known.neighbors[unknown.name];
-                            nearKnown = knownIndex;
-                            nearNeighbor = unknownIndex;
+                            minWay = known[knownName].weight + known[knownName].neighbors[unknownName];
+                            nearKnown = knownName;
+                            nearUnknown = unknownName;
 
                         }
 
                     }
 
-                });
+                }
 
+            }
+
+            unknown[nearUnknown].way = known[nearKnown].way + ' ' + nearUnknown;
+            unknown[nearUnknown].weight = minWay;
+            var neighborsNames = Object.keys(unknown[nearUnknown].neighbors);
+            neighborsNames.forEach(function(name) {
+                if (!unknown[name] && !known[name]) {
+                    unknown[name] = nodes[name];
+                }
             });
-
-            knownNodes.push(unknownNodes[nearNeighbor]);
-            unknownNodes[nearNeighbor].way =  knownNodes[nearKnown].way + ' ' + unknownNodes[nearNeighbor].name;
-            unknownNodes.splice(nearNeighbor, 1);
+            known[nearUnknown] = unknown[nearUnknown];
+            delete unknown[nearUnknown];
             minWay = Infinity;
 
         }
 
-        knownNodes.forEach(function(node) {
-            console.log(start + '  -->  ' + node.name + ':  ' + node.way);
-        });
+        var result = [];
+        for (var key in known) {
+            if (key == startName) {
+                known[key].way = '';
+                known[key].weight = Infinity;
+            } else {
+                result.push(startName + ' --> ' + key + ': ' + known[key].way);
+            }
+        }
 
+        return result;
 
     }
 
     function getNodes(array) {
 
         var nodes = {};
-        var result = [];
 
         array.forEach(function(node) {
 
@@ -319,6 +342,8 @@
 
                 nodes[node.from] = {
                     name: node.from,
+                    weight: Infinity,
+                    way: '',
                     neighbors: {}
                 };
 
@@ -328,6 +353,8 @@
 
                 nodes[node.to] = {
                     name: node.to,
+                    weight: Infinity,
+                    way: '',
                     neighbors: {}
                 };
 
@@ -338,13 +365,7 @@
 
         });
 
-        for (var node in nodes) {
-
-            result.push(nodes[node]);
-
-        }
-
-        return result;
+        return nodes;
 
     }
 
