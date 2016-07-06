@@ -246,6 +246,8 @@
 
             showWays(node, nodes);
 
+        }
+
         */
 
     }
@@ -253,34 +255,36 @@
     function showWays(start, nodes) {
 
         var knownNodes = [];
-        nodes[start].way = '' + start;
-        knownNodes.push(nodes[start]);
-
         var unknownNodes = [];
-        for (var key in nodes) {
-            if (key !== start) {
-                unknownNodes.push(nodes[key]);
+
+        nodes.forEach(function(node) {
+
+            if (node.name === start) {
+                node.way = '' + start;
+                knownNodes.push(node);
+            } else {
+                unknownNodes.push(node);
             }
-        }
+
+        });
 
         var minWay = Infinity;
-        var nearKnown = 100;
-        var nearNeighbor = 100;
+        var nearKnown = Infinity;
+        var nearNeighbor = Infinity;
 
         while (unknownNodes.length > 0) {
 
+            knownNodes.forEach(function(known, knownIndex) {
 
-            knownNodes.forEach(function(from, fromIndex) {
+                unknownNodes.forEach(function(unknown, unknownIndex) {
 
-                unknownNodes.forEach(function(to, toIndex) {
+                    if (known.neighbors[unknown.name]) {
 
-                    if (from.neighbors[to.name]) {
+                        if (known.neighbors[unknown.name] < minWay) {
 
-                        if (from.neighbors[to.name] < minWay) {
-
-                            minWay = from.neighbors[to.name];
-                            nearKnown = fromIndex;
-                            nearNeighbor = toIndex;
+                            minWay = known.neighbors[unknown.name];
+                            nearKnown = knownIndex;
+                            nearNeighbor = unknownIndex;
 
                         }
 
@@ -294,8 +298,6 @@
             unknownNodes[nearNeighbor].way =  knownNodes[nearKnown].way + ' ' + unknownNodes[nearNeighbor].name;
             unknownNodes.splice(nearNeighbor, 1);
             minWay = Infinity;
-            nearKnown = 100;
-            nearNeighbor = 100;
 
         }
 
@@ -309,6 +311,7 @@
     function getNodes(array) {
 
         var nodes = {};
+        var result = [];
 
         array.forEach(function(node) {
 
@@ -335,7 +338,13 @@
 
         });
 
-        return nodes;
+        for (var node in nodes) {
+
+            result.push(nodes[node]);
+
+        }
+
+        return result;
 
     }
 
